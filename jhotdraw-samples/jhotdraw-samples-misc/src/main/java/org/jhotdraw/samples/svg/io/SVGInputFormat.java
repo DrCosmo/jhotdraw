@@ -7,6 +7,23 @@
  */
 package org.jhotdraw.samples.svg.io;
 
+import static org.jhotdraw.draw.AttributeKeys.FILL_COLOR;
+import static org.jhotdraw.draw.AttributeKeys.FONT_BOLD;
+import static org.jhotdraw.draw.AttributeKeys.FONT_FACE;
+import static org.jhotdraw.draw.AttributeKeys.FONT_ITALIC;
+import static org.jhotdraw.draw.AttributeKeys.FONT_SIZE;
+import static org.jhotdraw.draw.AttributeKeys.FONT_UNDERLINE;
+import static org.jhotdraw.draw.AttributeKeys.IS_STROKE_DASH_FACTOR;
+import static org.jhotdraw.draw.AttributeKeys.IS_STROKE_MITER_LIMIT_FACTOR;
+import static org.jhotdraw.draw.AttributeKeys.STROKE_CAP;
+import static org.jhotdraw.draw.AttributeKeys.STROKE_COLOR;
+import static org.jhotdraw.draw.AttributeKeys.STROKE_DASHES;
+import static org.jhotdraw.draw.AttributeKeys.STROKE_DASH_PHASE;
+import static org.jhotdraw.draw.AttributeKeys.STROKE_JOIN;
+import static org.jhotdraw.draw.AttributeKeys.STROKE_MITER_LIMIT;
+import static org.jhotdraw.draw.AttributeKeys.STROKE_WIDTH;
+import static org.jhotdraw.draw.AttributeKeys.TRANSFORM;
+import static org.jhotdraw.draw.AttributeKeys.WINDING_RULE;
 import static org.jhotdraw.samples.svg.SVGAttributeKeys.*;
 import static org.jhotdraw.samples.svg.SVGConstants.*;
 
@@ -80,6 +97,9 @@ public class SVGInputFormat implements InputFormat {
 
   /** FontFormatter for parsing font family names. */
   private FontFormatter fontFormatter = new FontFormatter();
+
+  /** Registry pattern */
+  private HashMap<String, ElementReader> elementReader = new HashMap<>();
 
   /** Each SVG element establishes a new Viewport. */
   private static class Viewport {
@@ -181,6 +201,7 @@ public class SVGInputFormat implements InputFormat {
   @Override
   public void read(InputStream in, Drawing drawing, boolean replace) throws IOException {
     long start;
+    initReaders();
     this.figures = new LinkedList<Figure>();
     DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
     DocumentBuilder builder;
@@ -300,6 +321,47 @@ public class SVGInputFormat implements InputFormat {
     }
   }
 
+  @FunctionalInterface
+  interface ElementReader {
+    Figure read(Element elem) throws IOException;
+  }
+
+  private void initReaders() {
+    elementReader.put("a", this::readAElement);
+    elementReader.put("circle", this::readCircleElement);
+    elementReader.put("defs", (e) -> {
+      readDefsElement(e);
+      return null;
+    });
+    elementReader.put("ellipse", this::readEllipseElement);
+    elementReader.put("g", this::readGElement);
+    elementReader.put("image", this::readImageElement);
+    elementReader.put("line", this::readLineElement);
+    elementReader.put("linearGradient", (e) -> {
+      readLinearGradientElement(e);
+      return null;
+    });
+    elementReader.put("path", this::readPathElement);
+    elementReader.put("polygon", this::readPolygonElement);
+    elementReader.put("polyline", this::readPolylineElement);
+    elementReader.put("radialGradient", (e) -> {
+      readRadialGradientElement(e);
+      return null;
+    });
+    elementReader.put("rect", this::readRectElement);
+    elementReader.put("svg", this::readSVGElement);
+    elementReader.put("switch", this::readSwitchElement);
+    elementReader.put("text", this::readTextElement);
+    elementReader.put("textArea", this::readTextAreaElement);
+    elementReader.put(
+        "title", null); // FIXME - Implement reading of title element f = readTitleElement(elem);
+    elementReader.put("use", this::readUseElement);
+    elementReader.put("solidColor", (e) -> {
+      readSolidColorElement(e);
+      return null;
+    });
+  }
+
   /**
    * Reads an SVG element of any kind.
    *
@@ -308,63 +370,22 @@ public class SVGInputFormat implements InputFormat {
    */
   private Figure readElement(Element elem) throws IOException {
     Figure f = null;
+
     if (elem.getPrefix() == null || elem.getPrefix().equals(SVG_NAMESPACE)) {
       String name = elem.getLocalName();
       if (name == null) {
         LOG.warning("SVGInputFormat warning: skipping nameless element");
-      } else if ("a".equals(name)) {
-        f = readAElement(elem);
-      } else if ("circle".equals(name)) {
-        f = readCircleElement(elem);
-      } else if ("defs".equals(name)) {
-        readDefsElement(elem);
-        f = null;
-      } else if ("ellipse".equals(name)) {
-        f = readEllipseElement(elem);
-      } else if ("g".equals(name)) {
-        f = readGElement(elem);
-      } else if ("image".equals(name)) {
-        f = readImageElement(elem);
-      } else if ("line".equals(name)) {
-        f = readLineElement(elem);
-      } else if ("linearGradient".equals(name)) {
-        readLinearGradientElement(elem);
-        f = null;
-      } else if ("path".equals(name)) {
-        f = readPathElement(elem);
-      } else if ("polygon".equals(name)) {
-        f = readPolygonElement(elem);
-      } else if ("polyline".equals(name)) {
-        f = readPolylineElement(elem);
-      } else if ("radialGradient".equals(name)) {
-        readRadialGradientElement(elem);
-        f = null;
-      } else if ("rect".equals(name)) {
-        f = readRectElement(elem);
-      } else if ("solidColor".equals(name)) {
-        readSolidColorElement(elem);
-        f = null;
-      } else if ("svg".equals(name)) {
-        f = readSVGElement(elem);
-        // f = readGElement(elem);
-      } else if ("switch".equals(name)) {
-        f = readSwitchElement(elem);
-      } else if ("text".equals(name)) {
-        f = readTextElement(elem);
-      } else if ("textArea".equals(name)) {
-        f = readTextAreaElement(elem);
-      } else if ("title".equals(name)) {
-        // FIXME - Implement reading of title element
-        // f = readTitleElement(elem);
-      } else if ("use".equals(name)) {
-        f = readUseElement(elem);
-      } else if ("style".equals(name)) {
-        // Nothing to do, style elements have been already
-        // processed in method flattenStyles
-      } else {
+        return f;
+      }
+
+      ElementReader elementReader = this.elementReader.get(name);
+
+      if (elementReader == null) {
         LOG.info("SVGInputFormat not implemented for <" + name + ">");
       }
+      f = elementReader.read(elem);
     }
+
     if (f instanceof SVGFigure) {
       if (((SVGFigure) f).isEmpty()) {
         // if (DEBUG) System.out.println("Empty figure "+f);
