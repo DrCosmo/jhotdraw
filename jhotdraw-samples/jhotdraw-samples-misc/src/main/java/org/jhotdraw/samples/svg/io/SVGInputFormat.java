@@ -162,10 +162,12 @@ public class SVGInputFormat implements InputFormat {
 
   public SVGInputFormat() {
     this(new DefaultSVGFigureFactory());
+    initReaders();
   }
 
   public SVGInputFormat(SVGFigureFactory factory) {
     this.factory = factory;
+    initReaders();
   }
 
   public void read(File file, Drawing drawing, boolean replace) throws IOException {
@@ -201,7 +203,6 @@ public class SVGInputFormat implements InputFormat {
   @Override
   public void read(InputStream in, Drawing drawing, boolean replace) throws IOException {
     long start;
-    initReaders();
     this.figures = new LinkedList<Figure>();
     DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
     DocumentBuilder builder;
@@ -329,7 +330,7 @@ public class SVGInputFormat implements InputFormat {
   private void initReaders() {
     elementReader.put("a", this::readAElement);
     elementReader.put("circle", this::readCircleElement);
-    elementReader.put("defs", (e) -> {
+    elementReader.put("defs", e -> {
       readDefsElement(e);
       return null;
     });
@@ -337,14 +338,14 @@ public class SVGInputFormat implements InputFormat {
     elementReader.put("g", this::readGElement);
     elementReader.put("image", this::readImageElement);
     elementReader.put("line", this::readLineElement);
-    elementReader.put("linearGradient", (e) -> {
+    elementReader.put("linearGradient", e -> {
       readLinearGradientElement(e);
       return null;
     });
     elementReader.put("path", this::readPathElement);
     elementReader.put("polygon", this::readPolygonElement);
     elementReader.put("polyline", this::readPolylineElement);
-    elementReader.put("radialGradient", (e) -> {
+    elementReader.put("radialGradient", e -> {
       readRadialGradientElement(e);
       return null;
     });
@@ -353,10 +354,9 @@ public class SVGInputFormat implements InputFormat {
     elementReader.put("switch", this::readSwitchElement);
     elementReader.put("text", this::readTextElement);
     elementReader.put("textArea", this::readTextAreaElement);
-    elementReader.put(
-        "title", null); // FIXME - Implement reading of title element f = readTitleElement(elem);
+    elementReader.put("title", null);
     elementReader.put("use", this::readUseElement);
-    elementReader.put("solidColor", (e) -> {
+    elementReader.put("solidColor", e -> {
       readSolidColorElement(e);
       return null;
     });
@@ -378,12 +378,13 @@ public class SVGInputFormat implements InputFormat {
         return f;
       }
 
-      ElementReader elementReader = this.elementReader.get(name);
+      ElementReader reader = this.elementReader.get(name);
 
-      if (elementReader == null) {
+      if (reader == null) {
         LOG.info("SVGInputFormat not implemented for <" + name + ">");
+      } else {
+        f = reader.read(elem);
       }
-      f = elementReader.read(elem);
     }
 
     if (f instanceof SVGFigure) {
