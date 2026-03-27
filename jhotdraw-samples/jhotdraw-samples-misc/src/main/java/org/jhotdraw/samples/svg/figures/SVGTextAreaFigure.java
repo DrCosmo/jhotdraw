@@ -134,7 +134,7 @@ public class SVGTextAreaFigure extends SVGAttributedFigure implements SVGFigure,
         float maxVerticalPos = (float) (textRect.y + textRect.height);
         if (leftMargin < rightMargin) {
           float tabWidth = (float)
-              (getTabSize() * font.getStringBounds("m", getFontRenderContext()).getWidth());
+              (getTabSize() * font.getStringBounds("m", createFontRenderContext()).getWidth());
           float[] tabStops = new float[(int) (textRect.width / tabWidth)];
           for (int i = 0; i < tabStops.length; i++) {
             tabStops[i] = (float) (textRect.x + (int) (tabWidth * (i + 1)));
@@ -210,7 +210,7 @@ public class SVGTextAreaFigure extends SVGAttributedFigure implements SVGFigure,
     // Now tabLocations has an entry for every tab's offset in
     // the text.  For convenience, the last entry is tabLocations
     // is the offset of the last character in the text.
-    LineBreakMeasurer measurer = new LineBreakMeasurer(styledText, getFontRenderContext());
+    LineBreakMeasurer measurer = new LineBreakMeasurer(styledText, createFontRenderContext());
     int currentTab = 0;
     while (measurer.getPosition() < styledText.getEndIndex()) {
       // Lay out and draw each line.  All segments on a line
@@ -394,7 +394,7 @@ public class SVGTextAreaFigure extends SVGAttributedFigure implements SVGFigure,
 
   @Override
   public double getBaseline() {
-    return getFont().getLineMetrics(getText(), getFontRenderContext()).getAscent()
+    return getFont().getLineMetrics(getText(), createFontRenderContext()).getAscent()
         + getInsets().top;
   }
 
@@ -557,7 +557,7 @@ public class SVGTextAreaFigure extends SVGAttributedFigure implements SVGFigure,
       float maxVerticalPos = Float.MAX_VALUE;
       if (leftMargin < rightMargin) {
         float tabWidth = (float)
-            (getTabSize() * font.getStringBounds("m", getFontRenderContext()).getWidth());
+            (getTabSize() * font.getStringBounds("m", createFontRenderContext()).getWidth());
         float[] tabStops = new float[(int) (textRect.width / tabWidth)];
         for (int i = 0; i < tabStops.length; i++) {
           tabStops[i] = (float) (textRect.x + (int) (tabWidth * (i + 1)));

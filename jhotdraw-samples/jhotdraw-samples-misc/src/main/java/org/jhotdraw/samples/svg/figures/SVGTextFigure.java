@@ -112,7 +112,7 @@ public class SVGTextFigure extends SVGAttributedFigure implements TextHolderFigu
       if (text == null || text.length() == 0) {
         text = " ";
       }
-      FontRenderContext frc = getFontRenderContext();
+      FontRenderContext frc = createFontRenderContext();
       HashMap<TextAttribute, Object> textAttributes = new HashMap<TextAttribute, Object>();
       textAttributes.put(TextAttribute.FONT, getFont());
       if (attr().get(FONT_UNDERLINE)) {
@@ -180,7 +180,7 @@ public class SVGTextFigure extends SVGAttributedFigure implements TextHolderFigu
       if (text == null || text.length() == 0) {
         text = " ";
       }
-      FontRenderContext frc = getFontRenderContext();
+      FontRenderContext frc = createFontRenderContext();
       HashMap<TextAttribute, Object> textAttributes = new HashMap<TextAttribute, Object>();
       textAttributes.put(TextAttribute.FONT, getFont());
       if (attr().get(FONT_UNDERLINE)) {

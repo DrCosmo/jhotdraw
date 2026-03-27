@@ -557,12 +557,8 @@ public abstract class AbstractAttributedFigure implements Figure, Cloneable {
     }
   }
 
-  protected FontRenderContext getFontRenderContext() {
-    FontRenderContext frc = null;
-    if (frc == null) {
-      frc = new FontRenderContext(new AffineTransform(), true, true);
-    }
-    return frc;
+  protected FontRenderContext createFontRenderContext() {
+    return new FontRenderContext(new AffineTransform(), true, true);
   }
 
   @Override

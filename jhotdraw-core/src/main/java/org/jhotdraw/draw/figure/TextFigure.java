@@ -173,7 +173,7 @@ public class TextFigure extends AbstractAttributedDecoratedFigure
       if (text == null || text.length() == 0) {
         text = " ";
       }
-      FontRenderContext frc = getFontRenderContext();
+      FontRenderContext frc = createFontRenderContext();
       HashMap<TextAttribute, Object> textAttributes = new HashMap<>();
       textAttributes.put(TextAttribute.FONT, getFont().deriveFont((float)
           (getFontSize() / AttributeKeys.getGlobalSizeFactor(this, sizeFactor))));
