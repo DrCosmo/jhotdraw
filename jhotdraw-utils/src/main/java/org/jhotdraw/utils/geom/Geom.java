@@ -19,6 +19,9 @@ import java.awt.geom.*;
  */
 public final class Geom {
 
+  private static final double EPSILON = 0.0001;
+  private static final double ROUNDING_OFFSET = 0.5;
+
   private Geom() {} // never instantiated
 
   /** Tests if a point is on a line. */
@@ -334,15 +337,14 @@ public final class Geom {
   public static Point angleToPoint(Rectangle r, double angle) {
     double si = sin(angle);
     double co = cos(angle);
-    double e = 0.0001;
     int x = 0, y = 0;
-    if (abs(si) > e) {
+    if (abs(si) > EPSILON) {
       x = (int) ((1.0 + co / abs(si)) / 2.0 * r.width);
       x = range(0, r.width, x);
     } else if (co >= 0.0) {
       x = r.width;
     }
-    if (abs(co) > e) {
+    if (abs(co) > EPSILON) {
       y = (int) ((1.0 + si / abs(co)) / 2.0 * r.height);
       y = range(0, r.height, y);
     } else if (si >= 0.0) {
@@ -355,15 +357,14 @@ public final class Geom {
   public static Point2D.Double angleToPoint(Rectangle2D.Double r, double angle) {
     double si = sin(angle);
     double co = cos(angle);
-    double e = 0.0001;
     double x = 0, y = 0;
-    if (abs(si) > e) {
+    if (abs(si) > EPSILON) {
       x = (1.0 + co / abs(si)) / 2.0 * r.width;
       x = range(0, r.width, x);
     } else if (co >= 0.0) {
       x = r.width;
     }
-    if (abs(co) > e) {
+    if (abs(co) > EPSILON) {
       y = (1.0 + si / abs(co)) / 2.0 * r.height;
       y = range(0, r.height, y);
     } else if (si >= 0.0) {
@@ -376,14 +377,14 @@ public final class Geom {
   public static Point polarToPoint(double angle, double fx, double fy) {
     double si = sin(angle);
     double co = cos(angle);
-    return new Point((int) (fx * co + 0.5), (int) (fy * si + 0.5));
+    return new Point((int) (fx * co + ROUNDING_OFFSET), (int) (fy * si + ROUNDING_OFFSET));
   }
 
   /** Converts a polar to a point */
   public static Point2D.Double polarToPoint2D(double angle, double fx, double fy) {
     double si = sin(angle);
     double co = cos(angle);
-    return new Point2D.Double(fx * co + 0.5, fy * si + 0.5);
+    return new Point2D.Double(fx * co + ROUNDING_OFFSET, fy * si + ROUNDING_OFFSET);
   }
 
   /** Gets the point on an oval that corresponds to the given angle. */
