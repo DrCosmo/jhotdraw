@@ -238,25 +238,7 @@ public final class Geom {
       prevX = coords[0];
       prevY = coords[1];
     }
-    /*
-    if (isClosed() && size() > 1) {
-    Node first = get(0);
-    Node last = get(size() - 1);
-    Point2D.Double chop = Geom.intersect(
-    first.x[0], first.y[0],
-    last.x[0], last.y[0],
-    p.x, p.y,
-    ctr.x, ctr.y
-    );
-    if (chop != null) {
-    double cl = Geom.length2(chop.x, chop.y, p.x, p.y);
-    if (cl < len) {
-    len = cl;
-    cx = chop.x;
-    cy = chop.y;
-    }
-    }
-    }*/
+
     // if none found, pick closest vertex
     if (len == Double.MAX_VALUE) {
       i = shape.getPathIterator(new AffineTransform(), 1);
