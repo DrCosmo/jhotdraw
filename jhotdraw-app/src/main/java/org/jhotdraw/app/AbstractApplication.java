@@ -597,6 +597,18 @@ public abstract class AbstractApplication extends AbstractBean implements Applic
    */
   @Override
   public URIChooser getOpenChooser(View v) {
+    initOpenChooser(v);
+    if (v == null) {
+      return openChooser;
+    }
+    return (URIChooser) v.getComponent().getClientProperty("openChooser");
+  }
+
+  /**
+   * Initialize the openChooser instance
+   * @param v The view. Specify null to get a chooser for the application.
+   */
+  public void initOpenChooser(View v) {
     if (v == null) {
       if (openChooser == null) {
         openChooser = model.createOpenChooser(this, null);
@@ -610,7 +622,6 @@ public abstract class AbstractApplication extends AbstractBean implements Applic
           }
         }
       }
-      return openChooser;
     } else {
       URIChooser chooser = (URIChooser) v.getComponent().getClientProperty("openChooser");
       if (chooser == null) {
@@ -627,7 +638,6 @@ public abstract class AbstractApplication extends AbstractBean implements Applic
           }
         }
       }
-      return chooser;
     }
   }
 
@@ -642,12 +652,23 @@ public abstract class AbstractApplication extends AbstractBean implements Applic
    */
   @Override
   public URIChooser getSaveChooser(View v) {
+    initSaveChooser(v);
+    if (v == null) {
+      return saveChooser;
+    }
+    return (URIChooser) v.getComponent().getClientProperty("saveChooser");
+  }
+
+  /**
+   * Initialize the saveChooser instance
+   * @param v The view. Specify null to get a chooser for the application.
+   */
+  public void initSaveChooser(View v) {
     if (v == null) {
       if (saveChooser == null) {
         saveChooser = model.createSaveChooser(this, null);
         saveChooser.getComponent().putClientProperty("application", this);
       }
-      return saveChooser;
     } else {
       URIChooser chooser = (URIChooser) v.getComponent().getClientProperty("saveChooser");
       if (chooser == null) {
@@ -661,7 +682,6 @@ public abstract class AbstractApplication extends AbstractBean implements Applic
           // ignore illegal values
         }
       }
-      return chooser;
     }
   }
 
@@ -676,12 +696,23 @@ public abstract class AbstractApplication extends AbstractBean implements Applic
    */
   @Override
   public URIChooser getImportChooser(View v) {
+    initImportChooser(v);
+    if (v == null) {
+      return importChooser;
+    }
+    return (URIChooser) v.getComponent().getClientProperty("importChooser");
+  }
+
+  /**
+   * Initialize the importChooser instance
+   * @param v The view. Specify null to get a chooser for the application.
+   */
+  public void initImportChooser(View v) {
     if (v == null) {
       if (importChooser == null) {
         importChooser = model.createImportChooser(this, null);
         importChooser.getComponent().putClientProperty("application", this);
       }
-      return importChooser;
     } else {
       URIChooser chooser = (URIChooser) v.getComponent().getClientProperty("importChooser");
       if (chooser == null) {
@@ -690,7 +721,6 @@ public abstract class AbstractApplication extends AbstractBean implements Applic
         chooser.getComponent().putClientProperty("view", v);
         chooser.getComponent().putClientProperty("application", this);
       }
-      return chooser;
     }
   }
 
@@ -705,12 +735,23 @@ public abstract class AbstractApplication extends AbstractBean implements Applic
    */
   @Override
   public URIChooser getExportChooser(View v) {
+    initExportChooser(v);
+    if (v == null) {
+      return exportChooser;
+    }
+    return (URIChooser) v.getComponent().getClientProperty("exportChooser");
+  }
+
+  /**
+   * Initialize the exportChooser instance
+   * @param v The view. Specify null to get a chooser for the application.
+   */
+  public void initExportChooser(View v) {
     if (v == null) {
       if (exportChooser == null) {
         exportChooser = model.createExportChooser(this, null);
         exportChooser.getComponent().putClientProperty("application", this);
       }
-      return exportChooser;
     } else {
       URIChooser chooser = (URIChooser) v.getComponent().getClientProperty("exportChooser");
       if (chooser == null) {
@@ -719,7 +760,6 @@ public abstract class AbstractApplication extends AbstractBean implements Applic
         chooser.getComponent().putClientProperty("view", v);
         chooser.getComponent().putClientProperty("application", this);
       }
-      return chooser;
     }
   }
 
