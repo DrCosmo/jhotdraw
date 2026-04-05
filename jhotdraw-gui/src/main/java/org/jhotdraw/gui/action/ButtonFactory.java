@@ -327,24 +327,6 @@ public class ButtonFactory {
     HSB_COLORS_AS_RGB = Collections.unmodifiableList(m);
   }
 
-  private static class ToolButtonListener implements ItemListener {
-
-    private Tool tool;
-    private DrawingEditor editor;
-
-    public ToolButtonListener(Tool t, DrawingEditor editor) {
-      this.tool = t;
-      this.editor = editor;
-    }
-
-    @Override
-    public void itemStateChanged(ItemEvent evt) {
-      if (evt.getStateChange() == ItemEvent.SELECTED) {
-        editor.setTool(tool);
-      }
-    }
-  }
-
   /** Prevent instance creation. */
   private ButtonFactory() {}
 
@@ -1634,6 +1616,79 @@ public class ButtonFactory {
     return strokePlacementPopupButton;
   }
 
+  public static JPopupButton createStrokeCapButton(DrawingEditor editor) {
+    return createStrokeCapButton(editor, ResourceBundleUtil.getBundle("org.jhotdraw.draw.Labels"));
+  }
+
+  public static JPopupButton createStrokeCapButton(
+      DrawingEditor editor, ResourceBundleUtil labels) {
+    return createStrokeCapButton(editor, labels, new ArrayList<>());
+  }
+
+  public static JPopupButton createStrokeCapButton(
+      DrawingEditor editor, ResourceBundleUtil labels, java.util.List<Disposable> dsp) {
+    JPopupButton popupButton = new JPopupButton();
+    labels.configureToolBarButton(popupButton, "attribute.strokeCap");
+    popupButton.setFocusable(false);
+    HashMap<AttributeKey<?>, Object> attr;
+    attr = new HashMap<>();
+    attr.put(STROKE_CAP, BasicStroke.CAP_BUTT);
+    AttributeAction a;
+    popupButton.add(
+        a = new AttributeAction(editor, attr, labels.getString("attribute.strokeCap.butt"), null));
+    dsp.add(a);
+    attr = new HashMap<>();
+    attr.put(STROKE_CAP, BasicStroke.CAP_ROUND);
+    popupButton.add(
+        a = new AttributeAction(editor, attr, labels.getString("attribute.strokeCap.round"), null));
+    dsp.add(a);
+    attr = new HashMap<>();
+    attr.put(STROKE_CAP, BasicStroke.CAP_SQUARE);
+    popupButton.add(
+        a = new AttributeAction(
+            editor, attr, labels.getString("attribute.strokeCap.square"), null));
+    dsp.add(a);
+    return popupButton;
+  }
+
+  public static JPopupButton createStrokeJoinButton(DrawingEditor editor) {
+    return createStrokeJoinButton(editor, ResourceBundleUtil.getBundle("org.jhotdraw.draw.Labels"));
+  }
+
+  public static JPopupButton createStrokeJoinButton(
+      DrawingEditor editor, ResourceBundleUtil labels) {
+    return createStrokeJoinButton(editor, labels, new ArrayList<>());
+  }
+
+  public static JPopupButton createStrokeJoinButton(
+      DrawingEditor editor, ResourceBundleUtil labels, java.util.List<Disposable> dsp) {
+    JPopupButton popupButton = new JPopupButton();
+    labels.configureToolBarButton(popupButton, "attribute.strokeJoin");
+    popupButton.setFocusable(false);
+    HashMap<AttributeKey<?>, Object> attr;
+    attr = new HashMap<>();
+    attr.put(STROKE_JOIN, BasicStroke.JOIN_BEVEL);
+    AttributeAction a;
+    popupButton.add(
+        a = new AttributeAction(
+            editor, attr, labels.getString("attribute.strokeJoin.bevel"), null));
+    dsp.add(a);
+    attr = new HashMap<>();
+    attr.put(STROKE_JOIN, BasicStroke.JOIN_ROUND);
+    popupButton.add(
+        a = new AttributeAction(
+            editor, attr, labels.getString("attribute.strokeJoin.round"), null));
+    dsp.add(a);
+    attr = new HashMap<>();
+    attr.put(STROKE_JOIN, BasicStroke.JOIN_MITER);
+    popupButton.add(
+        a = new AttributeAction(
+            editor, attr, labels.getString("attribute.strokeJoin.miter"), null));
+    dsp.add(a);
+    return popupButton;
+  }
+
+
   public static void addFontButtonsTo(JToolBar bar, DrawingEditor editor) {
     bar.add(createFontButton(editor));
     bar.add(createFontStyleBoldButton(editor));
@@ -1809,78 +1864,6 @@ public class ButtonFactory {
     return toggleButton;
   }
 
-  public static JPopupButton createStrokeCapButton(DrawingEditor editor) {
-    return createStrokeCapButton(editor, ResourceBundleUtil.getBundle("org.jhotdraw.draw.Labels"));
-  }
-
-  public static JPopupButton createStrokeCapButton(
-      DrawingEditor editor, ResourceBundleUtil labels) {
-    return createStrokeCapButton(editor, labels, new ArrayList<>());
-  }
-
-  public static JPopupButton createStrokeCapButton(
-      DrawingEditor editor, ResourceBundleUtil labels, java.util.List<Disposable> dsp) {
-    JPopupButton popupButton = new JPopupButton();
-    labels.configureToolBarButton(popupButton, "attribute.strokeCap");
-    popupButton.setFocusable(false);
-    HashMap<AttributeKey<?>, Object> attr;
-    attr = new HashMap<>();
-    attr.put(STROKE_CAP, BasicStroke.CAP_BUTT);
-    AttributeAction a;
-    popupButton.add(
-        a = new AttributeAction(editor, attr, labels.getString("attribute.strokeCap.butt"), null));
-    dsp.add(a);
-    attr = new HashMap<>();
-    attr.put(STROKE_CAP, BasicStroke.CAP_ROUND);
-    popupButton.add(
-        a = new AttributeAction(editor, attr, labels.getString("attribute.strokeCap.round"), null));
-    dsp.add(a);
-    attr = new HashMap<>();
-    attr.put(STROKE_CAP, BasicStroke.CAP_SQUARE);
-    popupButton.add(
-        a = new AttributeAction(
-            editor, attr, labels.getString("attribute.strokeCap.square"), null));
-    dsp.add(a);
-    return popupButton;
-  }
-
-  public static JPopupButton createStrokeJoinButton(DrawingEditor editor) {
-    return createStrokeJoinButton(editor, ResourceBundleUtil.getBundle("org.jhotdraw.draw.Labels"));
-  }
-
-  public static JPopupButton createStrokeJoinButton(
-      DrawingEditor editor, ResourceBundleUtil labels) {
-    return createStrokeJoinButton(editor, labels, new ArrayList<>());
-  }
-
-  public static JPopupButton createStrokeJoinButton(
-      DrawingEditor editor, ResourceBundleUtil labels, java.util.List<Disposable> dsp) {
-    JPopupButton popupButton = new JPopupButton();
-    labels.configureToolBarButton(popupButton, "attribute.strokeJoin");
-    popupButton.setFocusable(false);
-    HashMap<AttributeKey<?>, Object> attr;
-    attr = new HashMap<>();
-    attr.put(STROKE_JOIN, BasicStroke.JOIN_BEVEL);
-    AttributeAction a;
-    popupButton.add(
-        a = new AttributeAction(
-            editor, attr, labels.getString("attribute.strokeJoin.bevel"), null));
-    dsp.add(a);
-    attr = new HashMap<>();
-    attr.put(STROKE_JOIN, BasicStroke.JOIN_ROUND);
-    popupButton.add(
-        a = new AttributeAction(
-            editor, attr, labels.getString("attribute.strokeJoin.round"), null));
-    dsp.add(a);
-    attr = new HashMap<>();
-    attr.put(STROKE_JOIN, BasicStroke.JOIN_MITER);
-    popupButton.add(
-        a = new AttributeAction(
-            editor, attr, labels.getString("attribute.strokeJoin.miter"), null));
-    dsp.add(a);
-    return popupButton;
-  }
-
   public static JButton createPickAttributesButton(DrawingEditor editor) {
     return createPickAttributesButton(editor, new ArrayList<>());
   }
@@ -1922,5 +1905,23 @@ public class ButtonFactory {
     btn.setText(null);
     btn.setFocusable(false);
     return btn;
+  }
+
+  private static class ToolButtonListener implements ItemListener {
+
+    private Tool tool;
+    private DrawingEditor editor;
+
+    public ToolButtonListener(Tool t, DrawingEditor editor) {
+      this.tool = t;
+      this.editor = editor;
+    }
+
+    @Override
+    public void itemStateChanged(ItemEvent evt) {
+      if (evt.getStateChange() == ItemEvent.SELECTED) {
+        editor.setTool(tool);
+      }
+    }
   }
 }
