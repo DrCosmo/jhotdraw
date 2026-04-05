@@ -29,7 +29,7 @@ public final class Geom {
     return TOLERANCE;
   }
 
-  /** Tests if a point is on a line. */
+  /** Tests if a point is on a line within a certain tolerance.*/
   public static boolean lineContainsPoint(Point linePoint, Point lineEndPoint, Point point) {
     return lineContainsPoint(
         linePoint.x, linePoint.y, lineEndPoint.x, lineEndPoint.y, point.x, point.y, TOLERANCE);
@@ -41,7 +41,7 @@ public final class Geom {
   }
 
   /**
-   * Tests if a point is on a line.
+   * Tests if a point is on a line within a certain tolerance.
    *
    * <p>changed Werner Randelshofer 2003-11-26
    */
