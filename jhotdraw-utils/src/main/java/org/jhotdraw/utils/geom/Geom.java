@@ -62,7 +62,7 @@ public final class Geom {
   }
 
   /**
-   * Tests if a point is on a line.
+   * Tests if a point is on a line within a certain tolerance.
    *
    * <p>changed Werner Randelshofer 2003-11-26
    */
