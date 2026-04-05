@@ -21,12 +21,17 @@ public final class Geom {
 
   private static final double EPSILON = 0.0001;
   private static final double ROUNDING_OFFSET = 0.5;
+  private static final double TOLERANCE = 3d;
 
   private Geom() {} // never instantiated
 
+  public static double getTolerance() {
+    return TOLERANCE;
+  }
+
   /** Tests if a point is on a line. */
   public static boolean lineContainsPoint(int x1, int y1, int x2, int y2, int px, int py) {
-    return lineContainsPoint(x1, y1, x2, y2, px, py, 3d);
+    return lineContainsPoint(x1, y1, x2, y2, px, py, TOLERANCE);
   }
 
   /**
