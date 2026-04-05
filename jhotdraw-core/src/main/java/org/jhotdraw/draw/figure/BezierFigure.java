@@ -24,6 +24,7 @@ import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.NoSuchElementException;
 import javax.swing.undo.AbstractUndoableEdit;
 import javax.swing.undo.CannotRedoException;
 import javax.swing.undo.CannotUndoException;
@@ -478,8 +479,9 @@ public class BezierFigure extends AbstractAttributedFigure {
   }
 
   /**
-   * Finds a control point index. Returns -1 if no control point could be found. FIXME - Move this
-   * to BezierPath
+   * Finds a control point index.
+   * @throws NoSuchElementException if no control point could be found.
+   * FIXME - Move this to BezierPath
    */
   public int findNode(Point2D.Double p) {
     BezierPath tp = path;
@@ -489,7 +491,7 @@ public class BezierFigure extends AbstractAttributedFigure {
         return i;
       }
     }
-    return -1;
+    throw new NoSuchElementException("no control point could be found at " + p);
   }
 
   /**
