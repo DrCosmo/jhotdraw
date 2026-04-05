@@ -30,6 +30,12 @@ public final class Geom {
   }
 
   /** Tests if a point is on a line. */
+  public static boolean lineContainsPoint(Point linePoint, Point lineEndPoint, Point point) {
+    return lineContainsPoint(
+        linePoint.x, linePoint.y, lineEndPoint.x, lineEndPoint.y, point.x, point.y, TOLERANCE);
+  }
+
+  /** Tests if a point is on a line. */
   public static boolean lineContainsPoint(int x1, int y1, int x2, int y2, int px, int py) {
     return lineContainsPoint(x1, y1, x2, y2, px, py, TOLERANCE);
   }
